@@ -1,0 +1,42 @@
+﻿.status-card {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    margin-bottom: 10px;
+}
+
+.status-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.check-icon {
+    font-size: 24px;
+}
+
+.status-details {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+    .status-details span {
+        font-weight: bold;
+        color: #000;
+    }
+
+.output-box {
+    background: #f2f2f2;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 14px;
+    color: #333;
+}
