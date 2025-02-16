@@ -1,47 +1,6 @@
 ﻿@page "/"
 @page "/health-checks"
-
-@code {
-    private List<HealthCheckModel> HealthChecks = new List<HealthCheckModel>
-    {
-        new HealthCheckModel { Name = "apiserver", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now },
-        new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
-    };
-
-    private string ExpandedDetail = null;
-
-    private void ToggleDetails(string name)
-    {
-        ExpandedDetail = ExpandedDetail == name ? null : name;
-    }
-}
-
-<style>
-    .details-button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-    }
-
-        .details-button:hover {
-            background-color: #0056b3;
-        }
-
-    .icon {
-        margin-right: 5px;
-    }
-
-    .details-container {
-        padding: 10px;
-        border: 1px solid #ccc;
-        background-color: #f9f9f9;
-    }
-</style>
+@using BlazorHealthChecks.Models
 
 <table class="table">
     <thead>
@@ -89,11 +48,17 @@
 </table>
 
 @code {
-    public class HealthCheckModel
+    private List<HealthCheckModel> HealthChecks = new List<HealthCheckModel>
     {
-        public string Name { get; set; }
-        public bool IsHealthy { get; set; }
-        public DateTime OnStateFrom { get; set; }
-        public DateTime LastExecution { get; set; }
+        new HealthCheckModel { Name = "apiserver", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now },
+        new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
+    };
+
+    private string ExpandedDetail = null;
+
+    private void ToggleDetails(string name)
+    {
+        ExpandedDetail = ExpandedDetail == name ? null : name;
     }
 }
+

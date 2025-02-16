@@ -1,26 +1,5 @@
 ﻿@page "/counter"
-
-@code {
-    private List<HealthCheckModel> HealthChecks = new List<HealthCheckModel>
-    {
-        new HealthCheckModel { Name = "apiserver", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now },
-        new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
-    };
-
-    private HashSet<string> ExpandedDetails = new HashSet<string>();
-
-    private void ToggleDetails(string name)
-    {
-        if (ExpandedDetails.Contains(name))
-        {
-            ExpandedDetails.Remove(name);
-        }
-        else
-        {
-            ExpandedDetails.Add(name);
-        }
-    }
-}
+@using BlazorHealthChecks.Models
 
 <table class="table">
     <thead>
@@ -64,11 +43,23 @@
 </table>
 
 @code {
-    public class HealthCheckModel
+    private List<HealthCheckModel> HealthChecks = new List<HealthCheckModel>
     {
-        public string Name { get; set; }
-        public bool IsHealthy { get; set; }
-        public DateTime OnStateFrom { get; set; }
-        public DateTime LastExecution { get; set; }
+        new HealthCheckModel { Name = "apiserver", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now },
+        new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
+    };
+
+    private HashSet<string> ExpandedDetails = new HashSet<string>();
+
+    private void ToggleDetails(string name)
+    {
+        if (ExpandedDetails.Contains(name))
+        {
+            ExpandedDetails.Remove(name);
+        }
+        else
+        {
+            ExpandedDetails.Add(name);
+        }
     }
 }
