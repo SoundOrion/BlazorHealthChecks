@@ -7,11 +7,18 @@
         new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
     };
 
-    private string ExpandedDetail = null;
+    private HashSet<string> ExpandedDetails = new HashSet<string>();
 
     private void ToggleDetails(string name)
     {
-        ExpandedDetail = ExpandedDetail == name ? null : name;
+        if (ExpandedDetails.Contains(name))
+        {
+            ExpandedDetails.Remove(name);
+        }
+        else
+        {
+            ExpandedDetails.Add(name);
+        }
     }
 }
 
@@ -39,7 +46,7 @@
                 <td>@healthCheck.LastExecution.ToString("M/d/yyyy, h:mm:ss tt")</td>
                 <td><button @onclick="() => ToggleDetails(healthCheck.Name)">Details</button></td>
             </tr>
-            @if (ExpandedDetail == healthCheck.Name)
+            @if (ExpandedDetails.Contains(healthCheck.Name))
             {
                 <tr>
                     <td colspan="5">

@@ -1,63 +1,86 @@
 ﻿@page "/weather"
+@using BlazorHealthChecks.Models
 
 <PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
+@code {
+    private List<HealthCheckModel> HealthChecks = new List<HealthCheckModel>
+    {
+        new HealthCheckModel { Name = "apiserver", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now },
+        new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
+    };
 
-<p>This component demonstrates showing data.</p>
+    private string ExpandedDetail = null;
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
+    private void ToggleDetails(string name)
+    {
+        ExpandedDetail = ExpandedDetail == name ? null : name;
+    }
 }
-else
-{
-    <table class="table">
-        <thead>
+
+<style>
+    .details-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+        .details-button:hover {
+            background-color: #0056b3;
+        }
+
+    .icon {
+        margin-right: 5px;
+    }
+
+    .details-container {
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Health</th>
+            <th>On State From</th>
+            <th>Last Execution</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var healthCheck in HealthChecks)
+        {
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <td>@healthCheck.Name</td>
+                <td>
+                    <span style="color:@(healthCheck.IsHealthy ? "green" : "red")">
+                        @(healthCheck.IsHealthy ? "✔" : "✖")
+                    </span>
+                </td>
+                <td>@healthCheck.OnStateFrom.ToString("yyyy-MM-ddTHH:mm:ss")</td>
+                <td>@healthCheck.LastExecution.ToString("M/d/yyyy, h:mm:ss tt")</td>
+                <td>
+                    <button class="details-button" @onclick="() => ToggleDetails(healthCheck.Name)">
+                        <span class="icon">ℹ️</span> Details
+                    </button>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
+            @if (ExpandedDetail == healthCheck.Name)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td colspan="5">
+                        <SerfHealthStatus healthCheck="@healthCheck" />
+                    </td>
                 </tr>
             }
-        </tbody>
-    </table>
-}
-
-@code {
-    private WeatherForecast[]? forecasts;
-
-    protected override async Task OnInitializedAsync()
-    {
-        // Simulate asynchronous loading to demonstrate a loading indicator
-        await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
-    }
-
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-}
+        }
+    </tbody>
+</table>
