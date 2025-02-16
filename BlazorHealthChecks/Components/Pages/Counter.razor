@@ -1,0 +1,67 @@
+﻿@page "/counter"
+
+@code {
+    private List<HealthCheckModel> HealthChecks = new List<HealthCheckModel>
+    {
+        new HealthCheckModel { Name = "apiserver", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now },
+        new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
+    };
+
+    private string ExpandedDetail = null;
+
+    private void ToggleDetails(string name)
+    {
+        ExpandedDetail = ExpandedDetail == name ? null : name;
+    }
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Health</th>
+            <th>On State From</th>
+            <th>Last Execution</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var healthCheck in HealthChecks)
+        {
+            <tr>
+                <td>@healthCheck.Name</td>
+                <td>
+                    <span style="color:@(healthCheck.IsHealthy ? "green" : "red")">
+                        @(healthCheck.IsHealthy ? "✔" : "✖")
+                    </span>
+                </td>
+                <td>@healthCheck.OnStateFrom.ToString("yyyy-MM-ddTHH:mm:ss")</td>
+                <td>@healthCheck.LastExecution.ToString("M/d/yyyy, h:mm:ss tt")</td>
+                <td><button @onclick="() => ToggleDetails(healthCheck.Name)">Details</button></td>
+            </tr>
+            @if (ExpandedDetail == healthCheck.Name)
+            {
+                <tr>
+                    <td colspan="5">
+                        <div style="padding:10px; border:1px solid #ccc; background-color:#f9f9f9;">
+                            <strong>Details for @healthCheck.Name:</strong>
+                            <p>Health Status: @(healthCheck.IsHealthy ? "Healthy" : "Unhealthy")</p>
+                            <p>On State From: @healthCheck.OnStateFrom</p>
+                            <p>Last Execution: @healthCheck.LastExecution</p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public class HealthCheckModel
+    {
+        public string Name { get; set; }
+        public bool IsHealthy { get; set; }
+        public DateTime OnStateFrom { get; set; }
+        public DateTime LastExecution { get; set; }
+    }
+}

@@ -1,0 +1,99 @@
+﻿@page "/"
+@page "/health-checks"
+
+@code {
+    private List<HealthCheckModel> HealthChecks = new List<HealthCheckModel>
+    {
+        new HealthCheckModel { Name = "apiserver", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now },
+        new HealthCheckModel { Name = "webfrontend", IsHealthy = true, OnStateFrom = DateTime.UtcNow, LastExecution = DateTime.Now }
+    };
+
+    private string ExpandedDetail = null;
+
+    private void ToggleDetails(string name)
+    {
+        ExpandedDetail = ExpandedDetail == name ? null : name;
+    }
+}
+
+<style>
+    .details-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+        .details-button:hover {
+            background-color: #0056b3;
+        }
+
+    .icon {
+        margin-right: 5px;
+    }
+
+    .details-container {
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Health</th>
+            <th>On State From</th>
+            <th>Last Execution</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var healthCheck in HealthChecks)
+        {
+            <tr>
+                <td>@healthCheck.Name</td>
+                <td>
+                    <span style="color:@(healthCheck.IsHealthy ? "green" : "red")">
+                        @(healthCheck.IsHealthy ? "✔" : "✖")
+                    </span>
+                </td>
+                <td>@healthCheck.OnStateFrom.ToString("yyyy-MM-ddTHH:mm:ss")</td>
+                <td>@healthCheck.LastExecution.ToString("M/d/yyyy, h:mm:ss tt")</td>
+                <td>
+                    <button class="details-button" @onclick="() => ToggleDetails(healthCheck.Name)">
+                        <span class="icon">ℹ️</span> Details
+                    </button>
+                </td>
+            </tr>
+            @if (ExpandedDetail == healthCheck.Name)
+            {
+                <tr>
+                    <td colspan="5">
+                        <div class="details-container">
+                            <strong>Details for @healthCheck.Name:</strong>
+                            <p>Health Status: @(healthCheck.IsHealthy ? "Healthy" : "Unhealthy")</p>
+                            <p>On State From: @healthCheck.OnStateFrom</p>
+                            <p>Last Execution: @healthCheck.LastExecution</p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public class HealthCheckModel
+    {
+        public string Name { get; set; }
+        public bool IsHealthy { get; set; }
+        public DateTime OnStateFrom { get; set; }
+        public DateTime LastExecution { get; set; }
+    }
+}
